@@ -3,8 +3,9 @@ import axios from 'axios';
 
 const url = 'https://covid19.mathdro.id/api';
 
-const url2 = 'https://api.covidtracking.com/v1/states/'
+const url2 = 'https://api.covidtracking.com/v1/states'
 
+const oneDayUrl = 'https://api.covidtracking.com/v1/states'
 
 
 export const fetchData = async (country) => {
@@ -22,9 +23,9 @@ export const fetchData = async (country) => {
       return error;
     }
   };
+
+
   
-
-
 
 export const fetchDailyData = async () => {
     try {
@@ -50,19 +51,60 @@ export const fetchCountries = async () => {
 
 
 
-  export const fetchStatesDaily = async (state) => {
-      let changeableUrl2 = url2;
+  /* States API */
 
-      if(state) {
-          changeableUrl2 = `${url2}/${state}/daily.json`;
-      }
-
-      try {
-          const {data} = await axios.get(changeableUrl2);
-          console.log(data);
-          return data.map(({state, death, dateChecked: date, positiveIncrease}) => ({confirmed: positiveIncrease, deaths: death, date, state}));
-      }catch(error){
-          return error;
-      }
-
+  export const fetchStateData = async (state) => {
+    let changeableUrl = url;
+  
+    if (state) {
+      changeableUrl = `${url}/countries/${state}`;
+    }
+  
+    try {
+      const { data: { confirmed, recovered, deaths, lastUpdate } } = await axios.get(changeableUrl);
+  
+      return { confirmed, recovered, deaths, lastUpdate };
+    } catch (error) {
+      return error;
+    }
   };
+
+
+
+  export const fetchStates = async () => {
+    try {
+      const { data } = await axios.get(`${oneDayUrl}/info.json`);
+
+        const someData  = data.map(item =>  {
+            const container = {}
+            container.name  = item.name;
+            container.state = item.state;
+
+            return container;
+
+        })
+        return someData;
+    } catch (error) {
+      return error;
+    }
+  };
+
+
+
+export const fetchStatesDaily = async (state) => {
+    let changeableUrl2 = oneDayUrl;
+  
+    if (state) {
+      changeableUrl2 = `${oneDayUrl}/${state}/current.json`;
+    }
+  
+    try {
+        const {data}  = await axios.get(changeableUrl2);
+        return data;
+    } catch (error) {
+      return error;
+    }
+  };
+
+
+  
