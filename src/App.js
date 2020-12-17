@@ -16,7 +16,7 @@ class App extends React.Component {
   async componentDidMount() {
     const data = await fetchStatesDaily(this.state.states);
     this.setState({ data });
-    console.log(data.positiveIncrease);
+    console.log("Hi one");
   }
 
   handleCountryChange = async (country) => {
@@ -32,14 +32,14 @@ class App extends React.Component {
   }
 
   render() {
-    const { data, country } = this.state;
+    const { data, states } = this.state;
 
     return (
       <div className={styles.container}>
         {/* <img className={styles.image} src={image} alt="COVID-19" /> */}
         <Cards data={data} />
         <StatePicker handleStatesChange={this.handleStatesChange} />
-        <Chart data={data} country={country} /> 
+        <Chart data={data} states={states} /> 
       </div>
     );
   }
